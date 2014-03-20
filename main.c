@@ -1,7 +1,11 @@
 #include "parse.h"
 #include "exec.h"
+#include <stdio.h>
+#include <string.h>
+#include <signal.h>
 
 #define WHITESPACE " \n\t\r"
+#define BUFFER_SIZE 256
 
 typedef struct {
   char* command; //single command, doen't includ ";&\n\t". To be parsed
@@ -11,9 +15,10 @@ typedef struct {
 
 
 int main (int argc, char **argv) {
-  int quit = 0;         //for main loop
-  char* input;          //input
-  Cground info;  //to be passed in execute
+  int quit = 0; //for main loop
+  int length = 0;
+  char* input[BUFFER_SIZE + 1];   //input
+  Cground info;                   //to be passed in execute
 
   struct sigaction action;
   action.sa_sigaction = &signal_handler;
@@ -32,9 +37,11 @@ int main (int argc, char **argv) {
 
     else {
       while (strspn(input, WHITESPACE) != strlen(input)) {
-	info = chop(input); //chops info off of input
+	info.command = chop(input); //chops info off of input
+	length = strlen(info.command); //nyaaaan
+	input = input + length;
 	info.argv = parse(info.command); //parse into argv
-	execute(info);
+	execute(info.command);
       }
     }
 

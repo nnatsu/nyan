@@ -1,9 +1,12 @@
 #include <string.h>
+#include <stdlib.h>
+
+#define WHITESPACE " \n\t\r"
 
 char* chop (char*);
 char** parse (char*);
 
-char* chop(char* &input) {
+char* chop(char* input) {
   int length, size;
   char *block;
   size_t i;
@@ -11,13 +14,11 @@ char* chop(char* &input) {
 
   quit = 0;
 
-  for (i = 0; i < strlen(input)|| !quit; i++) {
+  for (i = 0; i < strlen(input) || !quit; i++) {
     if (input[i] == '\n' || input[i] == '\t' || input[i] == '&' || input[i] == ';') {
       strncpy(block, input, i+1);
-      strncpy(input, input+i, strlen(input)-i);
       quit = 1;
     }
- 
   }
   return block;
   
@@ -30,15 +31,25 @@ char* chop(char* &input) {
 
 char** parse (char* command) {
   // if job # not specific, store "-1" instead of #
-  char* token;
+  char* token, last;
   char** list;
-  int i, j; //i = command #, j = token # for current command
+  int i, size; //i = command #
 
-  token = strtok(command, "");
-  while(token) {
-    get_rid_of_white_space(token);
-    if (token ==";" || end_of_token(token) == ";") {
-      j++; //move to next command
-    }
+  token = strtok(command, WHITESPACE);
+
+  while(token != NULL) {
+
+    list = (char **) realloc(list, sizeof(char)*size + sizeof(token)); //reallocation of more memory
+    list[i] = token;
+    token = strtok(NULL, WHITESPACE);
+    size += (int) sizeof(token);
+    i++;
+
   }
+
+  list = (char **) realloc(list, sizeof(char)*size+sizeof(token));
+  list[i] = token; //NULL terminator
+
+  return list;
+
 }

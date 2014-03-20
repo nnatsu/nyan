@@ -2,22 +2,21 @@
 
 #define WHITESPACE " \n\t\r"
 
-char* chop (char*);
-char** parse (char*);
-
 char* chop(char* input) {
-  char *block;
-  size_t i;
-  int quit = 0;
+    char *block;
+    size_t i;
+    int quit = 0;
+    
+    block = malloc(sizeof(input));
 
-  for (i = 0; i < strlen(input) || !quit; i++) {
-    if (input[i] == '\n' || input[i] == '\t' || input[i] == '&' || input[i] == ';') {
-      block = malloc(sizeof(input));
-      strncpy(block, input, i+1);
-      quit = 1;
+    for (i = 0; i < strlen(input) && !quit; i++) {
+        if (input[i] == '\n' || input[i] == '\t' || input[i] == '&' || input[i] == ';') {
+
+            strncpy(block, input, i+1);
+            quit = 1;
+        }
     }
-  }
-  return block;
+    return block;
   
 }
 

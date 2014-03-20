@@ -42,6 +42,7 @@ int main (int argc, char **argv) {
     tcsetpgrp(shell_terminal, sid);
     tcgetattr(shell_terminal, &shell_tmodes);
     
+    init_job();
 
     while(!quit) {
         printf("u3u ");

@@ -16,7 +16,7 @@ struct Job {
     int status;
     Job *prev;
     Job *next;
-    char **args;
+    char *args;
 };
 
 void init_job();
@@ -28,8 +28,6 @@ void delete_job(int);
 Job* find_job(int);
 
 void print_job();
-
-void print_arg(char **);
 
 void update_job();
 

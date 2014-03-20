@@ -1,11 +1,7 @@
 #include "exec.h"
 
-
 #define RUNNING 1
 #define SUSPENDED 0
-
-
-
 
 void execute(Cground info) {
     char *command = info.command;       //single command to be parsed
@@ -26,8 +22,9 @@ void execute(Cground info) {
         print_job();
     }
     
+
     pid_t pid = fork();
-    
+
     if (pid < 0) {                          //Failed fork
         perror("Fork failed\n");
         exit(EXIT_FAILURE);
@@ -40,24 +37,16 @@ void execute(Cground info) {
             _exit(EXIT_SUCCESS);
         }
     } else {                                //Parent
-        Job* new = (Job*)malloc(sizeof(Job));
-        new->pid = pid;                     //Blocks other jobs frommodifying list
-
-        
-        //Block SIGCHLD and add new job to list
         sem_wait(&mutex);                           //Lock job list
         sigprocmask(SIG_BLOCK, &blockmask, NULL);   //Block SIGCHLD
-        add_job(new->pid, RUNNING, command);           //Add new job to list
+        add_job(pid, RUNNING, command);           //Add new job to list
         sem_post(&mutex);                           //Unlock job list
         sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
         
         if (foreground == 1) {                      //If job is foreground
-            tcsetpgrp(shell_terminal, new->pid);    //Put in fg, auto runs
-            
+            tcsetpgrp(shell_terminal, pid);    //Put in fg, auto runs
         }
-
     }
-    
 }
 
 

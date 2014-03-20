@@ -17,49 +17,27 @@ void init_job() {
 }
 
 /* Add a new job to list */
-/*
-void add_job(pid_t pid, int status, char **args) {
-    Job *new = (Job*)malloc(sizeof(Job));
-
-    int len = sizeof(args) / sizeof(args[0]);
-    new->args = (char**)malloc(sizeof(char*)*len);
-
-    new->pid = pid;
-    new->jid = ++(head->jid);
-    new->status = status;
-    //new->args = args;
-    memcpy(new->args, args, sizeof(**args));
-
-    new->prev = tail->prev;
-    new->next = tail;
-    tail->prev = new;
-}
-*/
-
-/* Add a new job to list */
 void add_job(pid_t pid, int status, char *command) {
+
     Job *new = (Job*)malloc(sizeof(Job));   //Create new job
-    
-    new->args = (char*)malloc(sizeof(command));
-    strncpy(new->args, command, strlen(command)+1);
+    printf("%s hahaha\n", command);
+    new->args = (char*)malloc(sizeof(char)*strlen(command));
+    strcpy(new->args, command);
     
     new->pid = pid;
     new->jid = ++(head->jid);               //Update jid
     new->status = status;                   //Update status
-    //new->args = args;                       //This ?????????
 
-    
     new->prev = tail->prev;                 //Add job to list
     new->next = tail;
     tail->prev = new;
+    new->prev->next = new;
 }
-
-
 
 /* Delete a job from list */
 void delete_job(int jid) {
     Job *cur = head->next;
-    while (cur->jid != jid && cur != NULL) {
+    while (cur->jid != jid && cur->args != NULL) {
         cur = cur->next;
     }
     if (cur == NULL) {
@@ -75,7 +53,7 @@ void delete_job(int jid) {
 /* Find a job from list */
 Job* find_job(int jid) {
     Job *cur = head->next;
-    while (cur->jid != jid && cur != NULL) {
+    while (cur->jid != jid && cur->args != NULL) {
         cur = cur->next;
     }
     if (cur == NULL) {
@@ -90,21 +68,11 @@ Job* find_job(int jid) {
 /* Print all jobs */
 void print_job() {
     Job *cur = head->next;
-    while (cur != NULL) {
-        printf("Job #%d: ", cur->jid);
-        print_arg(cur->args);
-        printf(". Status: ");
+    while (cur->args != NULL) {
+        printf("Job #%d: %s. Status: ", cur->jid, cur->args);
         if (cur->status == RUNNING) printf("Running.\n");
         if (cur->status == SUSPENDED) printf("Suspended.\n");
         cur = cur->next;
-    }
-}
-
-void print_arg(char **args) {
-    int len = sizeof(args) / sizeof(args[0]);
-    int i;
-    for (i = 0; i < len; i++) {
-        printf("%s ", args[i]);
     }
 }
 

@@ -29,8 +29,8 @@ void init_job() {
 void add_job(pid_t pid, int status, char ** args) {
     Job *new = (Job*)malloc(sizeof(Job));   //Create new job
     new->pid = pid;
-    new->jib = ++(head->jid);
-    new->status = status;
+    new->jib = ++(head->jid);               //Update jid
+    new->status = status;                   //Update status
     new->args = args;                       //This ?????????
     
     new->prev = tail->prev;                 //Add job to list

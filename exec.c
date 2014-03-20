@@ -1,22 +1,33 @@
-#include <stdio.h>
 #include "exec.h"
-#include "job.h"
+
 
 #define RUNNING 1
 #define SUSPENDED 0
 
+
+extern sigset_t blockmask;
+extern int shell_terminal;
+extern Job *head, *tail;
+extern int last_job_backgrounded, last_job_suspended;
+extern sem_t mutex;
+extern pid_t sid;
+extern struct termios shell_tmodes;
+
 void execute(Cground info) {
-    char *command = info->command;       //single command to be parsed
-    char **argv = info->command;         //args to exec
-    int foreground = info->foreground;   //1 T 0 F
+    //char *command = info.command;       //single command to be parsed
+    char **argv = info.argv;         //args to exec
+    int foreground = info.foreground;   //1 T 0 F
     
     
     if (strcmp(argv[0], "fg") == 0) {       //Built-in commands
-        make_fg(argv[1]);
+        make_fg(atoi(argv[1]));
+        
     } else if (strcmp(argv[0], "bg") == 0) {
-        start_bg(argv[1]);
+        start_bg(atoi(argv[1]));
+        
     } else if (strcmp(argv[0], "kill") == 0) {
-        kill(find_job(argv[1])->pid, SIGKILL);
+        kill(find_job(atoi(argv[1]))->pid, SIGKILL);
+        
     } else if (strcmp(argv[0], "jobs") == 0 || strcmp(argv[0], "ps") == 0) {
         print_job();
     }
@@ -39,19 +50,12 @@ void execute(Cground info) {
         new->pid = pid;                     //Blocks other jobs frommodifying list
 
         
-        //semaphore in MAIN????????
-        sem_t mutex;
-        sem_init(&mutex, 1, 1); //shared semaphore
-        
-        
-        
-        //???????? EXTERN BLOCKMASK VAR???
         //Block SIGCHLD and add new job to list
         sem_wait(&mutex);                           //Lock job list
         sigprocmask(SIG_BLOCK, &blockmask, NULL);   //Block SIGCHLD
         add_job(new->pid, RUNNING, argv);           //Add new job to list
         sem_post(&mutex);                           //Unlock job list
-        sigPROCMASK(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
+        sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
         
         if (foreground == 1) {                      //If job is foreground
             tcsetpgrp(shell_terminal, new->pid);    //Put in fg, auto runs
@@ -89,7 +93,7 @@ void make_fg(int jid) {
         int status;
         tcsetpgrp(shell_terminal, cur->pid);        //Make job fg
         
-        pid_t w = waitpid(pid, &status, WUNTRACED); //Wait for job to finish
+        pid_t w = waitpid(cur->pid, &status, WUNTRACED); //Wait for job to finish
         if (w == -1) {
             perror("Waitpid");
             exit(EXIT_FAILURE);

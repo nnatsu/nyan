@@ -7,15 +7,16 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-typedef struct {
+typedef struct Job Job;
+
+struct Job {
     pid_t pid;
     int jid;
     int status;
-    struct Job *prev;
-    struct Job *next;
+    Job *prev;
+    Job *next;
     char **args;
-} Job;
-
+};
 
 void init_job();
 
@@ -26,6 +27,8 @@ void delete_job(int);
 Job* find_job(int);
 
 void print_job();
+
+void print_arg(char **);
 
 void update_job();
 

@@ -1,6 +1,15 @@
 #ifndef _exec_h
 #define _exec_h
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <signal.h>
+#include <semaphore.h>
+#include <unistd.h>
+#include <termios.h>
+#include "job.h"
+
 typedef struct {
     char* command; //single command, doen't includ ";&\n\t". To be parsed
     char** argv;   //parsed parameters to be exec'd

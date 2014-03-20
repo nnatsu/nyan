@@ -29,6 +29,10 @@ int main (int argc, char **argv) {
     sigemptyset(&blockmask);
     sigaddset(&blockmask, SIGCHLD);
     
+    //semaphore in MAIN????????     //Initialize MUTEX
+    sem_t mutex;
+    sem_init(&mutex, 1, 1); //shared semaphore
+    
     struct termios shell_tmodes;
     int shell_terminal = STDIN_FILENO;       //fd and pid for main shell
     pid_t sid = getpid();

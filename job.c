@@ -1,4 +1,3 @@
-
 #include "job.h"
 
 #define RUNNING 1
@@ -21,13 +20,13 @@ void init_job() {
 void add_job(pid_t pid, int status, char ** args) {
     Job *new = (Job*)malloc(sizeof(Job));   //Create new job
     new->pid = pid;
-    new->jib = ++(head->jid);               //Update jid
+    new->jid = ++(head->jid);               //Update jid
     new->status = status;                   //Update status
     new->args = args;                       //This ?????????
     
     new->prev = tail->prev;                 //Add job to list
-    new->next = prev;
-    prev->prev = new;
+    new->next = tail;
+    tail->prev = new;
 }
 
 /* Delete a job from list */
@@ -65,10 +64,20 @@ Job* find_job(int jid) {
 void print_job() {
     Job *cur = head->next;
     while (cur != NULL) {
-        printf("Job #%d: %t. Status: ", cur->jid, cur->args);   //Args is wrong
+        printf("Job #%d: ", cur->jid);
+        print_arg(cur->args);
+        printf(". Status: ");
         if (cur->status == RUNNING) printf("Running.\n");
         if (cur->status == SUSPENDED) printf("Suspended.\n");
         cur = cur->next;
+    }
+}
+
+void print_arg(char **args) {
+    int len = sizeof(args) / sizeof(args[0]);
+    int i;
+    for (i = 0; i < len; i++) {
+        printf("%s ", args[i]);
     }
 }
 

@@ -1,5 +1,4 @@
-#include <string.h>
-#include <stdlib.h>
+#include "parse.h"
 
 #define WHITESPACE " \n\t\r"
 

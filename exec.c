@@ -7,18 +7,28 @@ void execute(Cground info) {
     char *command = info.command;       //single command to be parsed
     char **argv = info.argv;         //args to exec
     int foreground = info.foreground;   //1 T 0 F
-    
+    int size;
+    int i;
+
+    size = sizeof(argv)/sizeof(argv[0]);
+
     if (strcmp(argv[0], "fg") == 0) {       //Built-in commands
-        make_fg(atoi(argv[1]));
+      if (size == 1) i = 0;
+      else i = atoi(argv[1]);
+      make_fg(i);
         
     } else if (strcmp(argv[0], "bg") == 0) {
-        start_bg(atoi(argv[1]));
+      if (size == 1) i = 0;
+      else i = atoi(argv[1]);
+      start_bg(i);
         
     } else if (strcmp(argv[0], "kill") == 0) {
         kill(find_job(atoi(argv[1]))->pid, SIGKILL);
         
     } else if (strcmp(argv[0], "jobs") == 0 || strcmp(argv[0], "ps") == 0) {
         print_job();
+    } else if (strcmp(argv[0], "quit") == 0 || strcmp(argv[0], "exit") == 0) {
+      exit(0);
     }
     
 

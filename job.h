@@ -1,19 +1,11 @@
-//
-//  job.h
-//  
-//
-//  Created by Kangni Hu on 3/19/14.
-//
-//
-
 #ifndef _job_h
 #define _job_h
 
 void init_job();
 
-void add_job(pid_t char**);
+void add_job(pid_t, int, char **);
 
-void delete_job(pid_t);
+void delete_job(int);
 
 Job* find_job(int);
 

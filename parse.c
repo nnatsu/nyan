@@ -7,31 +7,30 @@ char* chop (char*);
 char** parse (char*);
 
 char* chop(char* input) {
-  int length, size;
   char *block;
   size_t i;
-  int quit;
-
-  quit = 0;
+  int quit = 0;
 
   for (i = 0; i < strlen(input) || !quit; i++) {
     if (input[i] == '\n' || input[i] == '\t' || input[i] == '&' || input[i] == ';') {
+      block = malloc(sizeof(input));
       strncpy(block, input, i+1);
       quit = 1;
     }
   }
   return block;
   
-
-
-  //input: string until user hits enter (\n \t what have you, included in input)
-  //output: cground
-  // changes input to whatever is left
 }
+
+
+
+//input: string until user hits enter (\n \t what have you, included in input)
+//output: cground
+// changes input to whatever is left
 
 char** parse (char* command) {
   // if job # not specific, store "-1" instead of #
-  char* token, last;
+  char* token;
   char** list;
   int i, size; //i = command #
 

@@ -17,7 +17,7 @@ typedef struct {
 int main (int argc, char **argv) {
   int quit = 0; //for main loop
   int length = 0;
-  char* input[BUFFER_SIZE + 1];   //input
+  char *input;   //input
   Cground info;                   //to be passed in execute
 
   struct sigaction action;

@@ -1,17 +1,14 @@
-#include "parse.h"
-#include "exec.h"
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
+#include <termios.h>
+#include "job.h"
+#include "parse.h"
+#include "exec.h"
+
 
 #define WHITESPACE " \n\t\r"
 #define BUFFER_SIZE 256
-
-typedef struct {
-  char* command; //single command, doen't includ ";&\n\t". To be parsed
-  char** argv;   //parsed parameters to be exec'd
-  int foreground;//1 (true) or 0 (false), to be used by exec
-} Cground;
 
 
 int main (int argc, char **argv) {
@@ -49,7 +46,7 @@ int main (int argc, char **argv) {
 	length = strlen(info.command); //nyaaaan
 	input = input + length;
 	info.argv = parse(info.command); //parse into argv
-	execute(info.command);
+	execute(info);
       }
     }
 

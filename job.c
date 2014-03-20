@@ -1,16 +1,8 @@
-#include <stdio.h>
+
+#include "job.h"
 
 #define RUNNING 1
 #define SUSPENDED 0
-
-typedef struct {
-    pid_t pid;
-    int jid;
-    int status;
-    Job *prev;
-    Job *next;
-    char **args;
-}Job;
 
 Job *head, *tail;
 

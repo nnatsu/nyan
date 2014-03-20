@@ -5,10 +5,10 @@
 #define RUNNING 1
 #define SUSPENDED 0
 
-void execute(Cground) {
-    char *command = Cground->command;       //single command to be parsed
-    char **argv = Cground->command;         //args to exec
-    int foreground = Cground->foreground;   //1 T 0 F
+void execute(Cground info) {
+    char *command = info->command;       //single command to be parsed
+    char **argv = info->command;         //args to exec
+    int foreground = info->foreground;   //1 T 0 F
     
     
     if (strcmp(argv[0], "fg") == 0) {       //Built-in commands

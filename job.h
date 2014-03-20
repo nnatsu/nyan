@@ -21,7 +21,7 @@ struct Job {
 
 void init_job();
 
-void add_job(pid_t, int, char **);
+void add_job(pid_t, int, char *);
 
 void delete_job(int);
 

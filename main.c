@@ -23,9 +23,17 @@ int main (int argc, char **argv) {
   struct sigaction action;
   action.sa_sigaction = &signal_handler;
     
-  sigset_t blockmask;           //Initialize set for blocking SIGCHLD
-  sigemptyset(&blockmask);
-  sigaddset(&blockmask, SIGCHLD);
+    sigset_t blockmask;           //Initialize set for blocking SIGCHLD
+    sigemptyset(&blockmask);
+    sigaddset(&blockmask, SIGCHLD);
+    
+    struct termios shell_tmodes;
+    int shell_terminal = STDIN_FILENO;       //fd and pid for main shell
+    pid_t sid = getpid();
+    setpgid(sid, sid);
+    tcsetpgrp(shell_terminal, sid);
+    tcgetattr(shell_terminal, &shell_tmodes);
+    
 
   while(!quit) {
     printf("u3u ");

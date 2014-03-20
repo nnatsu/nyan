@@ -7,7 +7,7 @@ void signal_handler(int);
 
 void make_fg(int);
 
-void make_bg(int);
+void start_bg(int);
 
 
 #endif

@@ -8,7 +8,7 @@
 
 
 void execute(Cground info) {
-    //char *command = info.command;       //single command to be parsed
+    char *command = info.command;       //single command to be parsed
     char **argv = info.argv;         //args to exec
     int foreground = info.foreground;   //1 T 0 F
     
@@ -47,7 +47,7 @@ void execute(Cground info) {
         //Block SIGCHLD and add new job to list
         sem_wait(&mutex);                           //Lock job list
         sigprocmask(SIG_BLOCK, &blockmask, NULL);   //Block SIGCHLD
-        add_job(new->pid, RUNNING, argv);           //Add new job to list
+        add_job(new->pid, RUNNING, command);           //Add new job to list
         sem_post(&mutex);                           //Unlock job list
         sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
         

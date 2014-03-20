@@ -17,22 +17,44 @@ void init_job() {
 }
 
 /* Add a new job to list */
-void add_job(pid_t pid, int status, char ** args) {
-    Job *new = (Job*)malloc(sizeof(Job));   //Create new job
+/*
+void add_job(pid_t pid, int status, char **args) {
+    Job *new = (Job*)malloc(sizeof(Job));
 
     int len = sizeof(args) / sizeof(args[0]);
     new->args = (char**)malloc(sizeof(char*)*len);
 
     new->pid = pid;
+    new->jid = ++(head->jid);
+    new->status = status;
+    //new->args = args;
+    memcpy(new->args, args, sizeof(**args));
+
+    new->prev = tail->prev;
+    new->next = tail;
+    tail->prev = new;
+}
+*/
+
+/* Add a new job to list */
+void add_job(pid_t pid, int status, char *command) {
+    Job *new = (Job*)malloc(sizeof(Job));   //Create new job
+    
+    new->args = (char*)malloc(sizeof(command));
+    strncpy(new->args, command, strlen(command)+1);
+    
+    new->pid = pid;
     new->jid = ++(head->jid);               //Update jid
     new->status = status;                   //Update status
     //new->args = args;                       //This ?????????
-    memcpy(new->args, args, sizeof(**args));
 
+    
     new->prev = tail->prev;                 //Add job to list
     new->next = tail;
     tail->prev = new;
 }
+
+
 
 /* Delete a job from list */
 void delete_job(int jid) {

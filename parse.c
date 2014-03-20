@@ -7,7 +7,7 @@ char* chop(char* input) {
     size_t i;
     int quit = 0;
     
-    block = malloc(sizeof(input));
+    block = (char*)malloc(sizeof(input));
 
     for (i = 0; i < strlen(input) && !quit; i++) {
         if (input[i] == '\n' || input[i] == '\t' || input[i] == '&' || input[i] == ';') {

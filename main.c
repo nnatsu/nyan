@@ -19,7 +19,7 @@ pid_t sid; //for main shell
 int main (int argc, char **argv) {
     int quit = 0; //for main loop
     int length = 0;
-    char *input;   //input
+    char *input = (char *)malloc(sizeof(char)*BUFFER_SIZE);   //input
     Cground info;                   //to be passed in execute
 
     struct sigaction action;

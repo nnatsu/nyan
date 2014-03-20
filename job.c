@@ -1,12 +1,7 @@
-//
-//  Job.c
-//  
-//
-//  Created by Kangni Hu on 3/19/14.
-//
-//
-
 #include <stdio.h>
+
+#define RUNNING 1
+#define SUSPENDED 0
 
 typedef struct {
     pid_t pid;
@@ -17,41 +12,74 @@ typedef struct {
     char **args;
 }Job;
 
-Job *head, tail;
+Job *head, *tail;
 
+int last_job_backgrounded, last_job_suspended;
+
+/* Initializes the Job list */
 void init_job() {
-    head = malloc(sizeof(Job));
-    tail = malloc(sizeof(Job));
+    head = (Job*)malloc(sizeof(Job));
+    tail = (Job*)malloc(sizeof(Job));
     head->next = tail;
     tail->prev = head;
-    tail->jid = 0;
+    head->jid = 0;
 }
 
+/* Add a new job to list */
 void add_job(pid_t pid, int status, char ** args) {
-    Job *new = malloc(sizeof(Job));
+    Job *new = (Job*)malloc(sizeof(Job));   //Create new job
     new->pid = pid;
-    new->jib = ++(tail->jid);
+    new->jib = ++(head->jid);
     new->status = status;
-    new->args = args;
-    new->prev = tail->prev;
+    new->args = args;                       //This ?????????
+    
+    new->prev = tail->prev;                 //Add job to list
     new->next = prev;
     prev->prev = new;
 }
 
-void delete_job(pid_t pid) {
-    Job *cur = head;
-    do {
+/* Delete a job from list */
+void delete_job(int jid) {
+    Job *cur = head->next;
+    while (cur->jid != jid && cur != NULL) {
         cur = cur->next;
-    } while (cur->pid != pid && cur != NULL);
-    cur->prev->next = cur->next;
-    cur->next->prev = cur->prev;
-    free(cur);
+    }
+    if (cur == NULL) {
+        printf("Job not found.\n");
+        
+    } else {
+        cur->prev->next = cur->next;
+        cur->next->prev = cur->prev;
+        free(cur);
+    }
 }
 
-Job* find_job(int) {
+/* Find a job from list */
+Job* find_job(int jid) {
+    Job *cur = head->next;
+    while (cur->jid != jid && cur != NULL) {
+        cur = cur->next;
+    }
+    if (cur == NULL) {
+        printf("Job not found.\n");
+        return NULL;
+        
+    } else {
+        return cur;
+    }
+}
+
+/* Print all jobs */
+void print_job() {
+    Job *cur = head->next;
+    while (cur != NULL) {
+        printf("Job #%d: %t. Status: ", cur->jid, cur->args);   //Args is wrong
+        if (cur->status == RUNNING) printf("Running.\n");
+        if (cur->status == SUSPENDED) printf("Suspended.\n");
+        cur = cur->next;
+    }
+}
+
+void update_job() {
     
 }
-
-void print_job();
-
-void update_job();

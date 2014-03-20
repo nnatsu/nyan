@@ -8,7 +8,6 @@ void execute(Cground info) {
     char **argv = info.argv;         //args to exec
     int foreground = info.foreground;   //1 T 0 F
     
-    
     if (strcmp(argv[0], "fg") == 0) {       //Built-in commands
         make_fg(atoi(argv[1]));
         
@@ -31,7 +30,7 @@ void execute(Cground info) {
     } else if (pid == 0) {                  //Child
         setpgid(pid, pid);                  //Set process group ID
         if (execvp(argv[0], argv) == -1) {  //Check execution
-            perror("Error: ");
+            perror("Error");
             exit(EXIT_FAILURE);
         } else {
             _exit(EXIT_SUCCESS);
@@ -74,6 +73,7 @@ void make_fg(int jid) {
         printf("Job not found\n");
     } else {
         int status;
+        sigprocmask(SIG_BLOCK, &blockmask_rest, NULL);
         tcsetpgrp(shell_terminal, cur->pid);        //Make job fg
         
         pid_t w = waitpid(cur->pid, &status, WUNTRACED); //Wait for job to finish
@@ -121,5 +121,11 @@ void start_bg(int jid) {
 }
 
 void signal_handler(int signum) {
-    
+    int status;
+    pid_t w;
+    while((w = waitpid(-1, &status, WNOHANG)) > 0) {
+        Job* temp = find_job_pid(w);
+        delete_job(temp->jid);
+         
+    }    
 }

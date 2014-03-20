@@ -6,11 +6,10 @@
 #include "parse.h"
 #include "exec.h"
 
-
 #define WHITESPACE " \n\t\r"
 #define BUFFER_SIZE 256
 
-sigset_t blockmask;
+sigset_t blockmask, blockmask_rest;
 sem_t mutex;
 struct termios shell_tmodes;
 int shell_terminal;
@@ -19,18 +18,20 @@ pid_t sid; //for main shell
 int main (int argc, char **argv) {
     int quit = 0; //for main loop
     int length = 0;
-    char *input = (char *)malloc(sizeof(char)*BUFFER_SIZE);   //input
+    char *input = (char*)malloc(sizeof(char)*BUFFER_SIZE);   //input
     Cground info;                   //to be passed in execute
 
     struct sigaction action;
     action.sa_handler = &signal_handler;
+    action.sa_flags = SA_NOCLDSTOP;
     if (sigaction(SIGCHLD, &action, NULL) < 0) {
         perror("sigaction");
         return 1;
     }
 
-    sigemptyset(&blockmask);        //Initialize set for blocking SIGCHLD
     sigaddset(&blockmask, SIGCHLD);
+    sigaddset(&blockmask_rest, SIGTTOU); //Enables child to run in fg
+    sigprocmask(SIG_BLOCK, &blockmask_rest, NULL);
 
     sem_init(&mutex, 1, 1); ////Initialize MUTEX
     

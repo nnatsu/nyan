@@ -27,6 +27,8 @@ void delete_job(int);
 
 Job* find_job(int);
 
+Job* find_job_pid(int);
+
 void print_job();
 
 void update_job();

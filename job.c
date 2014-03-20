@@ -20,7 +20,6 @@ void init_job() {
 void add_job(pid_t pid, int status, char *command) {
 
     Job *new = (Job*)malloc(sizeof(Job));   //Create new job
-    printf("%s hahaha\n", command);
     new->args = (char*)malloc(sizeof(char)*strlen(command));
     strcpy(new->args, command);
     
@@ -54,6 +53,20 @@ void delete_job(int jid) {
 Job* find_job(int jid) {
     Job *cur = head->next;
     while (cur->jid != jid && cur->args != NULL) {
+        cur = cur->next;
+    }
+    if (cur == NULL) {
+        printf("Job not found.\n");
+        return NULL;
+        
+    } else {
+        return cur;
+    }
+}
+
+Job* find_job_pid(pid_t pid) {
+    Job *cur = head->next;
+    while (cur->pid != pid && cur->args != NULL) {
         cur = cur->next;
     }
     if (cur == NULL) {

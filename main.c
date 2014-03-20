@@ -10,7 +10,7 @@ typedef struct {
 } Cground;
 
 
-int main (int argc, char argv**) {
+int main (int argc, char **argv) {
   int quit = 0;         //for main loop
   char* input;          //input
   Cground info;  //to be passed in execute

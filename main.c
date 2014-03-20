@@ -1,5 +1,7 @@
-#INCLUDE "parse.h"
-#INCLUDE "exec.h"
+#include "parse.h"
+#include "exec.h"
+
+#DEFINE 
 
 typedef struct cground {
   char* command; //single command, doen't includ ";&\n\t". To be parsed
@@ -14,8 +16,10 @@ int main (int argc, char argv**) {
   struct cground info;  //to be passed in execute
 
   //SIGACTION HERE
+  struct sigaction action;
+ 
+  action.sa_sigaction = &signal_handler;
 
-  init();
   while(!quit) {
     printf("u3u ");
 

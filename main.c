@@ -17,6 +17,10 @@ int main (int argc, char argv**) {
 
   struct sigaction action;
   action.sa_sigaction = &signal_handler;
+    
+  sigset_t blockmask;           //Initialize set for blocking SIGCHLD
+  sigemptyset(&blockmask);
+  sigaddset(&blockmask, SIGCHLD);
 
   while(!quit) {
     printf("u3u ");

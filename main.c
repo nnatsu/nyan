@@ -18,7 +18,12 @@ int main (int argc, char **argv) {
   Cground info;                   //to be passed in execute
 
   struct sigaction action;
-  action.sa_sigaction = &signal_handler;
+  action.sa_handler = &signal_handler;
+  if (sigaction(SIGCHLD, &action, NULL) < 0) {
+    perror("sigaction");
+    return 1;
+  }
+
     
     sigset_t blockmask;           //Initialize set for blocking SIGCHLD
     sigemptyset(&blockmask);
@@ -51,5 +56,7 @@ int main (int argc, char **argv) {
     }
 
   }
+
+  return 0;
 
 }

@@ -50,7 +50,7 @@ int main (int argc, char **argv) {
 
         //parse input if it's not empty
         if (fgets(input, BUFFER_SIZE, stdin) == NULL) {
-            printf("bad input\n");
+            printf("bad inputBALURGH\n");
         } else {
             while (strspn(input, WHITESPACE) != strlen(input)) {
                 info.command = chop(input); //chops info off of input

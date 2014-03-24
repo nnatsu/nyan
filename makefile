@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -Wall
+CFLAGS = -c -g -Wall
 
 main: main.o parse.o job.o exec.o
 	$(CC) -o main main.o parse.o job.o exec.o -lpthread

@@ -31,6 +31,8 @@ void child_handler(int);
 
 void stop_handler(int);
 
+void int_handler(int);
+
 void make_fg(int);
 
 void start_bg(int);

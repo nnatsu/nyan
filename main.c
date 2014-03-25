@@ -38,6 +38,12 @@ int main (int argc, char **argv) {
       perror("sigaction: sigstp");
       return 1;
     }
+    
+    action.sa_handler = &int_handler;
+    if (sigaction(SIGINT, &action, NULL) < 0) {
+      perror("sigaction:SIGINT");
+      return 1;
+    }
 
     sem_init(&mutex, 1, 1); ////Initialize MUTEX
     

@@ -153,3 +153,7 @@ void child_handler(int signum) {
 void stop_handler(int signum) {
   
 }
+
+void int_handler(int signum) {
+
+}

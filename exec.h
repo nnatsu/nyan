@@ -38,5 +38,6 @@ void make_fg(int);
 
 void start_bg(int);
 
+void kill_job(int, int);
 
 #endif

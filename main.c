@@ -32,6 +32,7 @@ int main (int argc, char **argv) {
 
     sigaddset(&blockmask, SIGCHLD);
     sigaddset(&blockmask_rest, SIGTTOU); //Enables child to run in fg
+    sigaddset(&blockmask_rest, SIGTTIN);
     sigprocmask(SIG_BLOCK, &blockmask_rest, NULL);
 
     action.sa_handler = &stop_handler;

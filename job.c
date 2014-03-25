@@ -63,8 +63,14 @@ void delete_job(int jid) {
         printf("Job not found.\n");
         
     } else {
-        cur->prev->next = cur->next;
+        cur->prevbg->nextbg = cur->nextbg;    //Unlink from bg list
+        cur->nextbg->prevbg = cur->prevbg;
+        cur->prevbg = NULL; cur->nextbg = NULL;
+
+        cur->prev->next = cur->next;         //Unlink from jobs list
         cur->next->prev = cur->prev;
+
+	printf("[%d]   Terminated.         %s\n", cur->jid, cur->args);
         free(cur);
     }
 }
@@ -112,11 +118,6 @@ void print_job() {
 
         if (cur->status == RUNNING) printf("Running.");
         if (cur->status == SUSPENDED) printf("Stopped."); 
-        if (cur->status == TERMINATED &&
-            cur->term_flag == 1) {
-            printf("Terminated.");
-            cur->term_flag = 0;
-        }
         printf("         %s\n", cur->args);
 
         cur = cur->next;

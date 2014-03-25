@@ -18,12 +18,21 @@ void execute(Cground info) {
       make_fg(i);
 
     } else if (strcmp(argv[0], "bg") == 0) {
-      if (len == 1) i = 0;
+      if (len == 1) i = -1;
       else i = atoi(argv[1]);
       start_bg(i);
         
     } else if (strcmp(argv[0], "kill") == 0) {
-      kill(find_job(atoi(argv[1]))->pid, SIGKILL);
+      int sigkill_flag=0;
+      if (len == 1) i = -1;
+      else if (len == 2 && atoi(argv[1]) == -9) {
+          i = -1;
+          sigkill_flag = 1;
+      } else if (len > 2 && atoi(argv[1]) == -9) {
+          i = atoi(argv[2]);
+          sigkill_flag = 1;
+      } else i = atoi(argv[1]);
+      kill_job(i, sigkill_flag);
         
     } else if (strcmp(argv[0], "jobs") == 0 || strcmp(argv[0], "ps") == 0) {
       print_job();
@@ -53,7 +62,6 @@ void execute(Cground info) {
         sem_post(&mutex);                           //Unlock job list
         sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
         if (foreground != 1) {                      //If job is foreground
-            printf("cur job is in fg\n");
             make_fg(-1);			    //Fg last job added to bg
         }
     }
@@ -79,31 +87,28 @@ void make_fg(int jid) {
     
     if (jid == -1) {                                //Or fg last job backgrounded
         cur = find_job(lastbg->prevbg->jid);
-printf("now jid %d", cur->jid);
         if (cur->status == SUSPENDED) {
             kill(cur->pid, SIGCONT);
-            cur->pid = RUNNING;
+            cur->status = RUNNING;
         }
     }
     
-    if (cur == NULL && !check_empty()) {       //If cannot find job & list not empty
+    if ((cur == NULL && !check_empty()) ||
+       (check_empty())){                   //If cannot find job & list not empty
         printf("Job not found\n");
-    } else if (check_empty()) {
-        printf("Currently has no job\n");
     } else {
         int status;
-        //sigprocmask(SIG_BLOCK, &blockmask_rest, NULL);
+        sigprocmask(SIG_BLOCK, &blockmask_rest, NULL);
         tcsetpgrp(shell_terminal, cur->pid);        //Make job fg
         
-printf("wait in fg");
-        pid_t w = waitpid(cur->pid, &status, WUNTRACED|WCONTINUED); //Wait for job to finish
+
+        pid_t w = waitpid(-1, &status, WUNTRACED); //Wait for job to finish
         if (w == -1) {
             perror("Waitpid");
             exit(EXIT_FAILURE);
         } else {
             if (WIFSTOPPED(status)) {               //Job suspended
                 cur->status = SUSPENDED;
-
                 cur->nextbg->prevbg = cur->prevbg;    //Unlink from list
                 cur->prevbg->nextbg = cur->nextbg;
 
@@ -113,17 +118,12 @@ printf("wait in fg");
                 lastbg->prevbg = cur;
             } else {                                //Job exited/killed
                 sem_wait(&mutex);                   //Lock job list
-                sigprocmask(SIG_BLOCK, &blockmask, NULL);
+                sigprocmask(SIG_BLOCK, &blockmask, NULL); //Block SIGCHLD
 
-                //delete_job(cur->jid);               //Block SIGCHLD & set to term
-                cur->status = TERMINATED;
-                cur->term_flag = 1;
-                cur->prevbg->nextbg = cur->nextbg;    //Unlink from list
-                cur->nextbg->prevbg = cur->prevbg;
-                cur->prevbg = NULL; cur->nextbg = NULL;
+                delete_job(cur->jid);
 
                 sem_post(&mutex);                   //Unlock job list
-                sigprocmask(SIG_UNBLOCK, &blockmask, NULL);
+                sigprocmask(SIG_UNBLOCK, &blockmask, NULL);//Unblock SIGCHLD
             }
         }
     }
@@ -134,23 +134,51 @@ printf("wait in fg");
 
 void start_bg(int jid) {
     Job *cur = head->next;
-    while (cur != NULL && jid != -1) {              //Cont specified job
-        if (cur->jid == jid && cur->status == SUSPENDED) {
+    while (cur != NULL && jid != -1 && cur->jid != jid) {    //Cont specified job
+        cur = cur->next;
+    }
+
+    if (cur != NULL && cur->jid == jid) {
+        if (cur->status == SUSPENDED) {
             kill(cur->pid, SIGCONT);
+            cur->status = RUNNING;
         }
+        printf("[%d]  %s &\n", cur->jid, cur->args);
     }
     
     if (jid == -1) {                                //Cont last suspended job
+
         cur = find_job(lastbg->prevbg->jid);
         if (cur->status == SUSPENDED) {
             kill(cur->pid, SIGCONT);
-        } else {
-            printf("Last suspended job is already running\n");
         }
+        printf("[%d]  %s &\n", cur->jid, cur->args);
     }
     
-    if (cur == NULL) {                              //Cannot find job
+    if ((cur == NULL && !check_empty()) ||
+       check_empty()) {                     //Cannot find job
         printf("Job not found\n");
+    }
+}
+
+void kill_job(int jid, int sigkill_flag) {
+    Job *cur = head->next;
+    while (cur != NULL && jid != -1 && cur->jid != jid) {  //Find specified job
+        cur = cur->next;
+    }
+    
+    if (jid == -1) {                                //Find last suspended job
+        cur = find_job(lastbg->prevbg->jid);
+    }
+    if ((cur == NULL && !check_empty()) ||
+       check_empty()) {                           //Cannot find job
+        printf("Job not found\n");
+    } else { 
+        if (sigkill_flag == 0) {		//SIGTERM
+            kill(cur->pid, SIGTERM);
+        } else if (sigkill_flag == 1) {		//SIGKILL
+            kill(cur->pid, SIGKILL);
+        }
     }
 }
 

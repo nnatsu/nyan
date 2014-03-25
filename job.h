@@ -17,11 +17,12 @@ struct Job {
     Job *prev;
     Job *next;
     char *args;
+    int fg; //0 = fg, 1 = bg
 };
 
 void init_job();
 
-void add_job(pid_t, int, char *);
+void add_job(pid_t, int, char *, int);
 
 void delete_job(int);
 

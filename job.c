@@ -17,15 +17,18 @@ void init_job() {
 }
 
 /* Add a new job to list */
-void add_job(pid_t pid, int status, char *command) {
+void add_job(pid_t pid, int status, char *command, int fg) {
 
     Job *new = (Job*)malloc(sizeof(Job));   //Create new job
     new->args = (char*)malloc(sizeof(char)*strlen(command));
     strcpy(new->args, command);
     
     new->pid = pid;
-    new->jid = ++(head->jid);               //Update jid
+    (head->jid)++;
+    new->jid = head->jid;               //Update jid
     new->status = status;                   //Update status
+    new->fg = fg;
+    last_job_backgrounded = new->jid;
 
     new->prev = tail->prev;                 //Add job to list
     new->next = tail;

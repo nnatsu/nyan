@@ -49,11 +49,12 @@ void execute(Cground info) {
     } else {                                //Parent
         sem_wait(&mutex);                           //Lock job list
         sigprocmask(SIG_BLOCK, &blockmask, NULL);   //Block SIGCHLD
-        add_job(pid, RUNNING, command);           //Add new job to list
+        add_job(pid, RUNNING, command, foreground); //Add new job to list
         sem_post(&mutex);                           //Unlock job list
         sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
         
         if (foreground != 1) {                      //If job is foreground
+            printf("cur fg\n");
             make_fg(-1);			    //Fg last job added to bg
         }
     }
@@ -78,6 +79,7 @@ void make_fg(int jid) {
     }
     
     if (jid == -1) {                                //Or fg last job backgrounded
+        printf("this %d",last_job_backgrounded);
         cur = find_job(last_job_backgrounded);
         if (cur->status == SUSPENDED) {
             kill(cur->pid, SIGCONT);

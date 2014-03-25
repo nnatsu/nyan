@@ -9,12 +9,14 @@ void execute(Cground info) {
     int foreground = info.foreground;   //1 T 0 F
     int size;
     int i;
+  printf("%s", info.command);
 
     size = sizeof(argv)/sizeof(argv[0]);
 
     if (strcmp(argv[0], "fg") == 0) {       //Built-in commands
       if (size == 1) i = 0;
       else i = atoi(argv[1]);
+      printf("%dadfasd\n", i);
       make_fg(i);
         
     } else if (strcmp(argv[0], "bg") == 0) {
@@ -72,10 +74,12 @@ void make_fg(int jid) {
                 kill(cur->pid, SIGCONT);
                 cur->status = RUNNING;
             }
+        } else {
+            cur = cur->next;
         }
     }
     
-    if (jid == -1) {                                //Fg last job backgrounded
+    if (jid == -1) {                                //Or fg last job backgrounded
         cur = find_job(last_job_backgrounded);
         if (cur->status == SUSPENDED) {
             kill(cur->pid, SIGCONT);
@@ -83,13 +87,15 @@ void make_fg(int jid) {
         }
     }
     
-    if (cur == NULL) {                              //Cannot find job
+    if (cur == NULL) {                              //If cannot find job
         printf("Job not found\n");
     } else {
         int status;
         sigprocmask(SIG_BLOCK, &blockmask_rest, NULL);
         tcsetpgrp(shell_terminal, cur->pid);        //Make job fg
         
+
+
         pid_t w = waitpid(cur->pid, &status, WUNTRACED); //Wait for job to finish
         if (w == -1) {
             perror("Waitpid");

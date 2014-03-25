@@ -21,7 +21,7 @@ Cground chop(char* input) {
           printf("found\n");
 	  strncpy(block, input, i+1);
 	  quit = 1;
-	  result.foreground = 1; //??    ? ??????
+	  result.foreground = 0; //??    ? ??????
 	}
     }
     
@@ -44,9 +44,9 @@ char** parse (char* command) {
   char** buffer;
   int i, size; //i = command #
 
-  whole = (char*) malloc(sizeof(command));
-  strncpy(whole, command, 256);
-
+  //whole = (char*) malloc(sizeof(command));
+  //strncpy(whole, command, 256);
+  whole = command;
   token = strtok(whole, WHITESPACE);
   list = malloc(1);
   buffer = malloc(1);

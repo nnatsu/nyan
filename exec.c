@@ -9,7 +9,7 @@ void execute(Cground info) {
     int foreground = info.foreground;   //1 T 0 F
     int size;
     int i;
-
+    printf("%d haha", foreground);
     size = sizeof(argv)/sizeof(argv[0]);
     size = 2;
     if (strcmp(argv[0], "fg") == 0) {       //Built-in commands
@@ -55,8 +55,7 @@ void execute(Cground info) {
         sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
         
         if (foreground == 1) {                      //If job is foreground
-            printf("asdfjsldfjdsf\n");
-            tcsetpgrp(shell_terminal, pid);    //Put in fg, auto runs
+            make_fg(-1);			    //Fg last job added to bg
         }
     }
 

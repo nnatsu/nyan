@@ -43,10 +43,10 @@ char** parse (char* command) {
   char** list;
   char** buffer;
   int i, size; //i = command #
-  printf("dafjkshfj");
+
   whole = (char*) malloc(sizeof(command));
   strncpy(whole, command, 256);
-  //whole = command;
+
   token = strtok(whole, WHITESPACE);
   list = malloc(1);
   buffer = malloc(1);

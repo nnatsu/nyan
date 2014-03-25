@@ -96,7 +96,7 @@ printf("now jid %d", cur->jid);
         tcsetpgrp(shell_terminal, cur->pid);        //Make job fg
         
 printf("wait in fg");
-        pid_t w = waitpid(-1, &status, WUNTRACED); //Wait for job to finish
+        pid_t w = waitpid(cur->pid, &status, WUNTRACED|WCONTINUED); //Wait for job to finish
         if (w == -1) {
             perror("Waitpid");
             exit(EXIT_FAILURE);

@@ -9,10 +9,9 @@ void execute(Cground info) {
     int foreground = info.foreground;   //1 T 0 F
     int size;
     int i;
-  printf("%s", info.command);
 
     size = sizeof(argv)/sizeof(argv[0]);
-
+    size = 2;
     if (strcmp(argv[0], "fg") == 0) {       //Built-in commands
       if (size == 1) i = 0;
       else i = atoi(argv[1]);

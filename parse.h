@@ -3,8 +3,9 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "exec.h"
 
-char* chop(char*);
+Cground chop(char*);
 char** parse(char*);
 
 #endif

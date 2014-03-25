@@ -49,17 +49,18 @@ int main (int argc, char **argv) {
         printf("u3u ");
 
         //parse input if it's not empty
-        if (fgets(input, BUFFER_SIZE, stdin) == NULL) {
-            printf("bad inputBALURGH\n");
-        } else {
-            while (strspn(input, WHITESPACE) != strlen(input)) {
-                info.command = chop(input); //chops info off of input
-                length = strlen(info.command); //nyaaaan
-                input = input + length;
-                info.argv = parse(info.command); //parse into argv
-                execute(info);
-            }
-        }
+	 if (fgets(input, BUFFER_SIZE, stdin) == NULL) {
+	  printf("bad input\n");
+	 } 
+	 else {
+	   while (strspn(input, WHITESPACE) != strlen(input)) {
+	     info = chop(input); //chops info off of input
+	     length = strlen(info.command); //nyaaaan
+	     input = input + length;
+	     info.argv = parse(info.command); //parse into argv
+	     execute(info);
+	   }
+	 }
 
     }
 

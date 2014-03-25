@@ -23,10 +23,10 @@ void execute(Cground info) {
       start_bg(i);
         
     } else if (strcmp(argv[0], "kill") == 0) {
-        kill(find_job(atoi(argv[1]))->pid, SIGKILL);
+      kill(find_job(atoi(argv[1]))->pid, SIGKILL);
         
     } else if (strcmp(argv[0], "jobs") == 0 || strcmp(argv[0], "ps") == 0) {
-        print_job();
+      print_job();
     } else if (strcmp(argv[0], "quit") == 0 || strcmp(argv[0], "exit") == 0) {
       exit(0);
     }

@@ -18,6 +18,10 @@ struct Job {
     Job *next;
     char *args;
     int fg; //0 = fg, 1 = bg
+
+    int term_flag;
+    Job *prevbg;
+    Job *nextbg;
 };
 
 void init_job();

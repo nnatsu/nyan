@@ -18,7 +18,7 @@ typedef struct {
 
 extern sigset_t blockmask, blockmask_rest;
 extern int shell_terminal;
-extern Job *head, *tail;
+extern Job *head, *tail, *lastbg;
 extern int last_job_backgrounded, last_job_suspended;
 extern sem_t mutex;
 extern pid_t sid;

@@ -2,6 +2,7 @@
 
 #define RUNNING 1
 #define SUSPENDED 0
+#define TERMINATED 2
 
 void execute(Cground info) {
     char *command = info.command;       //single command to be parsed
@@ -52,7 +53,6 @@ void execute(Cground info) {
         add_job(pid, RUNNING, command, foreground); //Add new job to list
         sem_post(&mutex);                           //Unlock job list
         sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
-        
         if (foreground != 1) {                      //If job is foreground
             printf("cur fg\n");
             make_fg(-1);			    //Fg last job added to bg
@@ -65,22 +65,21 @@ void execute(Cground info) {
 
 void make_fg(int jid) {
     Job *cur = head->next;
-	
-    while (cur != NULL && jid != -1) {              //Fg specified job
+
+    while (cur != NULL && jid != -1 && cur->jid != jid) {  //Fg specified job
+        cur = cur->next;
+printf("stuckc again?");
+    }
 
         if (cur->jid == jid) {
             if (cur->status == SUSPENDED) {
                 kill(cur->pid, SIGCONT);
                 cur->status = RUNNING;
             }
-        } else {
-            cur = cur->next;
         }
-    }
     
     if (jid == -1) {                                //Or fg last job backgrounded
-        printf("this %d",last_job_backgrounded);
-        cur = find_job(last_job_backgrounded);
+        cur = find_job(lastbg->prevbg->jid);
         if (cur->status == SUSPENDED) {
             kill(cur->pid, SIGCONT);
             cur->pid = RUNNING;
@@ -103,15 +102,36 @@ void make_fg(int jid) {
         } else {
             if (WIFSTOPPED(status)) {               //Job suspended
                 cur->status = SUSPENDED;
+                //last_job_backgrounded = cur->jid;   //Update lastbg'ed job
+printf("here");
+                last_job_backgrounded = cur->jid;
+
+                cur->nextbg->prevbg = cur->prevbg;    //Unlink from list
+                cur->prevbg->nextbg = cur->nextbg;
+
+                cur->prevbg = lastbg->prevbg;         //Relink at the end
+                cur->nextbg = lastbg;
+                cur->prevbg->nextbg = cur;
+                lastbg->prevbg = cur;
             } else {                                //Job exited/killed
                 sem_wait(&mutex);                   //Lock job list
                 sigprocmask(SIG_BLOCK, &blockmask, NULL);
-                delete_job(cur->jid);               //Block SIGCHLD & delete
+
+                //delete_job(cur->jid);               //Block SIGCHLD & set to term
+                cur->status = TERMINATED;
+                cur->term_flag = 1;
+                cur->prevbg->nextbg = cur->nextbg;    //Unlink from list
+                cur->nextbg->prevbg = cur->prevbg;
+                cur->prevbg = NULL; cur->nextbg = NULL;
+
+                if (cur->jid == last_job_backgrounded) {
+                    last_job_backgrounded = lastbg->prevbg->jid;
+                }
+
                 sem_post(&mutex);                   //Unlock job list
                 sigprocmask(SIG_UNBLOCK, &blockmask, NULL);
             }
         }
-        
     }
     
     tcsetpgrp(shell_terminal, sid);

@@ -90,6 +90,17 @@ void print_job() {
     }
 }
 
+/* Clean up jobs after shell quits */
+void clean_up_jobs() {
+    Job *cur = head->next;
+    free(head);
+    while(cur->args != NULL) {
+        free(cur);
+        cur = cur->next;
+    }
+    free(tail);
+}
+
 /* Not sure why need */
 void update_job() {
     

@@ -33,4 +33,6 @@ void print_job();
 
 void update_job();
 
+void clean_up_jobs();
+
 #endif

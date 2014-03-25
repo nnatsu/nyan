@@ -28,6 +28,7 @@ void execute(Cground info) {
     } else if (strcmp(argv[0], "jobs") == 0 || strcmp(argv[0], "ps") == 0) {
       print_job();
     } else if (strcmp(argv[0], "quit") == 0 || strcmp(argv[0], "exit") == 0) {
+      clean_up_jobs();
       exit(0);
     } else {
     
@@ -53,6 +54,7 @@ void execute(Cground info) {
         sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
         
         if (foreground == 1) {                      //If job is foreground
+            printf("asdfjsldfjdsf\n");
             tcsetpgrp(shell_terminal, pid);    //Put in fg, auto runs
         }
     }

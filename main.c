@@ -15,6 +15,7 @@ struct termios shell_tmodes;
 int shell_terminal;
 pid_t sid; //for main shell
 
+extern int arglen;
 int main (int argc, char **argv) {
     int quit = 0; //for main loop
     int length = 0;
@@ -70,6 +71,7 @@ int main (int argc, char **argv) {
 	     length = strlen(info.command); //nyaaaan
 	     input = input + length;
 	     info.argv = parse(info.command); //parse into argv
+             info.len = arglen;
 	     execute(info);
 	   }
 	 }

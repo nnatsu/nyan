@@ -35,14 +35,14 @@ Cground chop(char* input) {
 //input: string until user hits enter (\n \t what have you, included in input)
 //output: cground
 // changes input to whatever is left
-
+int arglen;
 char** parse (char* command) {
   // if job # not specific, store "-1" instead of #
   char* token;
   char* whole;
   char** list;
   char** buffer;
-  int i, size; //i = command #
+  int i=0, size; //i = command #
 
   //whole = (char*) malloc(sizeof(command));
   //strncpy(whole, command, 256);
@@ -66,6 +66,7 @@ char** parse (char* command) {
 
   list = (char **) realloc(list, sizeof(char)*size+sizeof(token));
   list[i] = token; //NULL terminator
+  arglen = i;
   return list;
 
 }

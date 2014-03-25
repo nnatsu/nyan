@@ -38,6 +38,8 @@ void print_job();
 
 void update_job();
 
+int check_empty();
+
 void clean_up_jobs();
 
 #endif

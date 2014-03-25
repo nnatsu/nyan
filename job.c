@@ -3,6 +3,8 @@
 #define RUNNING 1
 #define SUSPENDED 0
 #define TERMINATED 2
+#define HEADJOB -2
+#define TAILJOB -3
 
 Job *head, *tail, *lastbg, *firstbg;
 
@@ -17,6 +19,8 @@ void init_job() {
 
     head->next = tail;
     tail->prev = head;
+
+    tail->jid = TAILJOB;
 
     lastbg->prevbg = firstbg; 
     firstbg->nextbg = lastbg;
@@ -111,12 +115,18 @@ void print_job() {
         if (cur->status == TERMINATED &&
             cur->term_flag == 1) {
             printf("Terminated.");
-            cur->term_flag == 0;
+            cur->term_flag = 0;
         }
         printf("         %s\n", cur->args);
 
         cur = cur->next;
     }
+}
+
+/* Check whether job list is empty */
+int check_empty() {
+    if (head->next->jid == TAILJOB) return 1;
+    else return 0;
 }
 
 /* Clean up jobs after shell quits */

@@ -18,7 +18,7 @@ Cground chop(char* input) {
 	    result.foreground = 0; //????
         }
 	if (input[i] == '&') {
-          printf("found\n");
+          printf("found&\n");
 	  strncpy(block, input, i+1);
 	  quit = 1;
 	  result.foreground = 1; //??    ? ??????

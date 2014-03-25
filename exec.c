@@ -9,13 +9,12 @@ void execute(Cground info) {
     int foreground = info.foreground;   //1 T 0 F
     int size;
     int i;
-    printf("%d haha", foreground);
+
     size = sizeof(argv)/sizeof(argv[0]);
     size = 2;
     if (strcmp(argv[0], "fg") == 0) {       //Built-in commands
       if (size == 1) i = 0;
       else i = atoi(argv[1]);
-      printf("%dadfasd\n", i);
       make_fg(i);
         
     } else if (strcmp(argv[0], "bg") == 0) {
@@ -54,7 +53,7 @@ void execute(Cground info) {
         sem_post(&mutex);                           //Unlock job list
         sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
         
-        if (foreground == 0) {                      //If job is foreground
+        if (foreground != 1) {                      //If job is foreground
             make_fg(-1);			    //Fg last job added to bg
         }
     }
@@ -65,8 +64,9 @@ void execute(Cground info) {
 
 void make_fg(int jid) {
     Job *cur = head->next;
-
+	
     while (cur != NULL && jid != -1) {              //Fg specified job
+
         if (cur->jid == jid) {
             if (cur->status == SUSPENDED) {
                 kill(cur->pid, SIGCONT);

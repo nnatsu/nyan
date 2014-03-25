@@ -64,6 +64,7 @@ int main (int argc, char **argv) {
 	     length = strlen(info.command); //nyaaaan
 	     input = input + length;
 	     info.argv = parse(info.command); //parse into argv
+	     printf("info.command: %s", info.command);
 	     execute(info);
 	   }
 	 }

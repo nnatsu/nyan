@@ -26,7 +26,6 @@ Cground chop(char* input) {
     }
     
     result.command = block;
-    printf("block: %s command: %s\n", block, result.command);
     return result;
   
 }
@@ -40,11 +39,15 @@ Cground chop(char* input) {
 char** parse (char* command) {
   // if job # not specific, store "-1" instead of #
   char* token;
+  char* whole;
   char** list;
   char** buffer;
   int i, size; //i = command #
-  
-  token = strtok(command, WHITESPACE);
+
+  whole = (char*) malloc(sizeof(command));
+  strncpy(whole, command, 256);
+
+  token = strtok(whole, WHITESPACE);
   list = malloc(1);
   buffer = malloc(1);
   size = (int) sizeof(list);

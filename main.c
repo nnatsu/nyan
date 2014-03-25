@@ -22,7 +22,7 @@ int main (int argc, char **argv) {
     Cground info;                   //to be passed in execute
 
     struct sigaction action;
-    action.sa_handler = &signal_handler;
+    action.sa_handler = &child_handler;
     action.sa_flags = SA_NOCLDSTOP;
     if (sigaction(SIGCHLD, &action, NULL) < 0) {
         perror("sigaction");
@@ -32,6 +32,12 @@ int main (int argc, char **argv) {
     sigaddset(&blockmask, SIGCHLD);
     sigaddset(&blockmask_rest, SIGTTOU); //Enables child to run in fg
     sigprocmask(SIG_BLOCK, &blockmask_rest, NULL);
+
+    action.sa_handler = &stop_handler;
+    if (sigaction(SIGTSTP, &action, NULL) < 0) {
+      perror("sigaction: sigstp");
+      return 1;
+    }
 
     sem_init(&mutex, 1, 1); ////Initialize MUTEX
     

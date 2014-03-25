@@ -27,7 +27,9 @@ extern struct termios shell_tmodes;
 
 void execute(Cground);
 
-void signal_handler(int);
+void child_handler(int);
+
+void stop_handler(int);
 
 void make_fg(int);
 

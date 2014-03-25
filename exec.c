@@ -132,7 +132,7 @@ void start_bg(int jid) {
     }
 }
 
-void signal_handler(int signum) {
+void child_handler(int signum) {
     int status;
     pid_t w;
     while((w = waitpid(-1, &status, WNOHANG)) > 0) {
@@ -140,4 +140,8 @@ void signal_handler(int signum) {
         delete_job(temp->jid);
          
     }    
+}
+
+void stop_handler(int signum) {
+  
 }

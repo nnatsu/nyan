@@ -18,8 +18,30 @@
 || "We're totally not doing this at 5:30 in the morning!"          ||
 ++=================================================================++
 
-To compile:
-"make"
+[To compile|clean]
+make|make clean
 
-BUGS:
-a lot
+[Description]
+ - fg # (without '%' before #) foregrounds said job.
+ - fg alone foregrounds last backgrounded job.
+
+ - bg, kill, kill -9 all work the same as fg
+
+ - jobs prints a list of running/suspended jobs
+   - terminated jobs are removed from the list
+
+ - ctrl-z suspends current foreground job
+
+ - two sets of pointers in each job struct. One set takes care of
+   managing the list of jobs. The other takes care of the order of
+   backgrounding each job.
+
+[Bugs]
+ - ; adds a redundant job ";" to the list
+ - shell prints "bad input" when it shouldn't from time to time
+ - memory leaks
+   - freed jobs as they are terminated and deleted from list
+   - still others
+
+[Other (Not Included)]
+ - Piping hangs the shell when there are multiple pipes involved.

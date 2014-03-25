@@ -44,9 +44,9 @@ char** parse (char* command) {
   char** buffer;
   int i=0, size; //i = command #
 
-  //whole = (char*) malloc(sizeof(command));
-  //strncpy(whole, command, 256);
-  whole = command;
+  whole = (char*) malloc(sizeof(command));
+  strncpy(whole, command, 256);
+  //whole = command;
   token = strtok(whole, WHITESPACE);
   list = malloc(1);
   buffer = malloc(1);

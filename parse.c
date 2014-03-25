@@ -26,7 +26,7 @@ Cground chop(char* input) {
     }
     
     result.command = block;
-
+    printf("block: %s command: %s\n", block, result.command);
     return result;
   
 }
@@ -41,16 +41,20 @@ char** parse (char* command) {
   // if job # not specific, store "-1" instead of #
   char* token;
   char** list;
+  char** buffer;
   int i, size; //i = command #
   
   token = strtok(command, WHITESPACE);
   list = malloc(1);
+  buffer = malloc(1);
   size = (int) sizeof(list);
   
   
   while(token != NULL) {
-
-    list = (char **) realloc(list, sizeof(char)*size + sizeof(token)); //reallocation of more memory
+    buffer = (char **) realloc(buffer, sizeof(char)*size + sizeof(token)); //reallocate more memory
+    if (!buffer) exit(1);
+    else list = (char **) buffer;
+    
     list[i] = token;
     token = strtok(NULL, WHITESPACE);
     size += (int) sizeof(token);

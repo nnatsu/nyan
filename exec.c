@@ -79,18 +79,14 @@ void make_fg(int jid) {
     }
 
     if (cur != NULL && cur->jid == jid) {
-        if (cur->status == SUSPENDED) {
-            kill(cur->pid, SIGCONT);
-            cur->status = RUNNING;
-        }
+        kill(cur->pid, SIGCONT);
+        cur->status = RUNNING;
     }
     
     if (jid == -1) {                                //Or fg last job backgrounded
         cur = find_job(lastbg->prevbg->jid);
-        if (cur->status == SUSPENDED) {
-            kill(cur->pid, SIGCONT);
-            cur->status = RUNNING;
-        }
+        kill(cur->pid, SIGCONT);
+        cur->status = RUNNING;
     }
     
     if ((cur == NULL && !check_empty()) ||

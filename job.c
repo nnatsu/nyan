@@ -82,6 +82,7 @@ Job* find_job_pid(pid_t pid) {
 void print_job() {
     Job *cur = head->next;
     while (cur->args != NULL) {
+	
         printf("Job #%d: %s. Status: ", cur->jid, cur->args);
         if (cur->status == RUNNING) printf("Running.\n");
         if (cur->status == SUSPENDED) printf("Suspended.\n");

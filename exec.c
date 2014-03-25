@@ -29,9 +29,9 @@ void execute(Cground info) {
       print_job();
     } else if (strcmp(argv[0], "quit") == 0 || strcmp(argv[0], "exit") == 0) {
       exit(0);
-    }
+    } else {
     
-
+    /* Everything in else */
     pid_t pid = fork();
 
     if (pid < 0) {                          //Failed fork
@@ -56,6 +56,8 @@ void execute(Cground info) {
             tcsetpgrp(shell_terminal, pid);    //Put in fg, auto runs
         }
     }
+
+   }
 }
 
 

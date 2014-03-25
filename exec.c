@@ -54,7 +54,7 @@ void execute(Cground info) {
         sem_post(&mutex);                           //Unlock job list
         sigprocmask(SIG_UNBLOCK, &blockmask, NULL); //Unblock SIGCHLD
         
-        if (foreground == 1) {                      //If job is foreground
+        if (foreground == 0) {                      //If job is foreground
             make_fg(-1);			    //Fg last job added to bg
         }
     }
@@ -94,7 +94,7 @@ void make_fg(int jid) {
         
 
 
-        pid_t w = waitpid(cur->pid, &status, WUNTRACED); //Wait for job to finish
+        pid_t w = waitpid(-1, &status, WUNTRACED); //Wait for job to finish
         if (w == -1) {
             perror("Waitpid");
             exit(EXIT_FAILURE);

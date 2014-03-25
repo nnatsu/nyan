@@ -21,7 +21,7 @@ Cground chop(char* input) {
           printf("found\n");
 	  strncpy(block, input, i+1);
 	  quit = 1;
-	  result.foreground = 0; //??    ? ??????
+	  result.foreground = 1; //??    ? ??????
 	}
     }
     
